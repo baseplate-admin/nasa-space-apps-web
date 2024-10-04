@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import Notifications from '$lib/icons/notifications.svelte';
 	import farmerImage from '$lib/assets/picture.png';
 	import Temp from '$lib/icons/temp.svelte';
@@ -32,6 +32,12 @@
 		yield: `5000 Kg`,
 		prob: `2300 Kg`
 	};
+
+	const farms = new Array([]);
+	let farms_added = $state<null | boolean>(true);
+	// $effect(() => {
+	// 	farms_added = farms.length === 0;
+	// });
 </script>
 
 <div class="w-full h-12 flex items-center justify-end">
@@ -138,26 +144,43 @@
 	</div>
 </div>
 
-<div class="flex justify-between px-10">
+<div class="flex justify-between px-10 gap-4">
 	<div class="flex flex-col justify-center items-center w-full">
-		<div class="font-semibold self-start">Farms Overview</div>
-		<div>
-			<div class="flex justify-center items-center flex-col gap-3">
-				<div class="flex items-center justify-center bg-[#EAEEF9] rounded-full size-32">
-					<div
-						class="rounded-full size-14 flex justify-center items-center"
-						style="background: linear-gradient(90deg, #4481EB 0%, #04BEFE 100%);"
-					>
-						<TickWithCircle />
-					</div>
-				</div>
-				<div class="font-semibold text-black">Let’s Add a Farm First</div>
-				<div class="text-[#344054]">Add Farm to track your farm data and get a quick vision</div>
-				<button class="btn btn-accent flex !bg-[#44b79a] text-white w-28 h-4 font-bold text-xs"
-					><Add /> Add Farm</button
+		<div class="flex w-full justify-between h-11 items-center">
+			<span class="font-semibold">Farms Overview</span>
+			{#if farms_added}<button
+					class="btn btn-accent flex !bg-[#44b79a] text-white w-28 h-4 font-bold text-xs"
+					><Add />Add Farm</button
 				>
-			</div>
+			{/if}
 		</div>
+		{#if farms_added}
+			<div class="grid grid-cols-3 gap-5 mt-6">
+				{#each Array(6).fill(0) as item}
+					<div class="p-5 w-[309px] h-[321px] rounded-2xl bg-white">
+						<div><img src="" /></div>
+					</div>
+				{/each}
+			</div>
+		{:else}
+			<div>
+				<div class="flex justify-center items-center flex-col gap-3">
+					<div class="flex items-center justify-center bg-[#EAEEF9] rounded-full size-32">
+						<div
+							class="rounded-full size-14 flex justify-center items-center"
+							style="background: linear-gradient(90deg, #4481EB 0%, #04BEFE 100%);"
+						>
+							<TickWithCircle />
+						</div>
+					</div>
+					<div class="font-semibold text-black">Let’s Add a Farm First</div>
+					<div class="text-[#344054]">Add Farm to track your farm data and get a quick vision</div>
+					<button class="btn btn-accent flex !bg-[#44b79a] text-white w-28 h-4 font-bold text-xs"
+						><Add />Add Farm</button
+					>
+				</div>
+			</div>
+		{/if}
 	</div>
 	<div>
 		<div class="bg-white w-96 p-6 rounded-3xl">
