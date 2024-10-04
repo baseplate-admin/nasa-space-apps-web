@@ -16,7 +16,7 @@
 	let isSearching = $state(false);
 	let errorMessage = $state('');
 	let mapElement = $state<HTMLElement | null>(null);
-
+	let dropdownElement = $state<HTMLDetailsElement | null>(null);
 	onMount(() => {
 		if (!mapElement) return;
 
@@ -111,20 +111,48 @@
 
 	function selectLocation(result: SearchResult): void {
 		if (map) {
-			map.setView([result.lat, result.lon], 5);
+			map.setView([result.lat, result.lon], 50);
 			searchResults = [];
 			searchInput = result.name;
 		}
 	}
+	$effect(() => {
+		if (!dropdownElement) return;
+
+		if (searchResults.length > 0 && searchInput !== '') dropdownElement.open = true;
+		else dropdownElement.open = false;
+	});
 </script>
 
 <main class="relative h-screen z-0">
 	<div class="z-20 flex w-screen justify-center items-center mt-8">
-		<details class="dropdown">
-			<summary class="btn m-1">open or close</summary>
+		<details class="dropdown" bind:this={dropdownElement}>
+			<summary class="btn p-0"
+				><input
+					type="text"
+					onfocus={(event) => {
+						event.preventDefault();
+					}}
+					oninput={async (event) => {
+						searchInput = (event.currentTarget as HTMLInputElement).value;
+						await handleSearch();
+					}}
+					placeholder="Search your location"
+					class="input input-bordered w-full max-w-xs placeholder:font-normal"
+				/></summary
+			>
 			<ul class="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-				<li><a>Item 1</a></li>
-				<li><a>Item 2</a></li>
+				{#each searchResults as item}
+					<li>
+						<button
+							onclick={() => {
+								selectLocation(item);
+							}}
+						>
+							{item.name}
+						</button>
+					</li>
+				{/each}
 			</ul>
 		</details>
 	</div>
@@ -153,27 +181,7 @@
 		background: #000;
 	}
 
-	.error {
-		color: red;
-		padding: 10px;
-	}
-
-	.search-results {
-		list-style-type: none;
-		padding: 0;
-		margin: 0;
-		background-color: white;
-		border: 1px solid #ddd;
-		max-height: 200px;
-		overflow-y: auto;
-	}
-
-	.search-results li {
-		padding: 10px;
-		cursor: pointer;
-	}
-
-	.search-results li:hover {
-		background-color: #f0f0f0;
+	summary::marker {
+		content: '';
 	}
 </style>
