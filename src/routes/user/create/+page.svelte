@@ -34,8 +34,8 @@
 	</div>
 
 	<div>Have an Account? <a href="./login" class="text-black font-semibold">Sign In</a></div>
-	<button class="btn btn-accent !bg-[#44b79a] text-white w-56 h-4 font-bold text-lg"
-		>Continue</button
+	<a href="./success" class="btn btn-accent !bg-[#44b79a] text-white w-56 h-4 font-bold text-lg"
+		>Continue</a
 	>
 </div>
 

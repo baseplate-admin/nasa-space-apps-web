@@ -15,9 +15,9 @@
 	let searchResults = $state<SearchResult[]>([]);
 	let isSearching = $state(false);
 	let errorMessage = $state('');
+	let mapElement = $state<HTMLElement | null>(null);
 
-	$effect(() => {
-		const mapElement = document.getElementById('map');
+	onMount(() => {
 		if (!mapElement) return;
 
 		const EPSG4326 = new L.Proj.CRS(
@@ -73,17 +73,6 @@
 
 		map.addLayer(layer);
 
-		// Workaround for 1px lines appearing in some browsers
-		const originalInitTile = L.GridLayer.prototype._initTile;
-		L.GridLayer.include({
-			_initTile: function (tile: HTMLElement): void {
-				originalInitTile.call(this, tile);
-				const tileSize = this.getTileSize();
-				tile.style.width = tileSize.x + 1 + 'px';
-				tile.style.height = tileSize.y + 1 + 'px';
-			}
-		});
-
 		return () => {
 			map?.remove();
 		};
@@ -129,32 +118,17 @@
 	}
 </script>
 
-<main class="relative">
-	<div id="searchInput">
-		<input
-			type="text"
-			bind:value={searchInput}
-			placeholder="Search for a location"
-			onkeyup={(e: KeyboardEvent) => e.key === 'Enter' && handleSearch()}
-		/>
-		<button onclick={handleSearch} disabled={isSearching}>
-			{isSearching ? 'Searching...' : 'Search'}
-		</button>
+<main class="relative h-screen z-0">
+	<div class="z-20 flex w-screen justify-center items-center mt-8">
+		<details class="dropdown">
+			<summary class="btn m-1">open or close</summary>
+			<ul class="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+				<li><a>Item 1</a></li>
+				<li><a>Item 2</a></li>
+			</ul>
+		</details>
 	</div>
-
-	{#if errorMessage}
-		<div class="error">{errorMessage}</div>
-	{/if}
-
-	{#if searchResults.length > 0}
-		<ul class="search-results">
-			{#each searchResults as result}
-				<li onclick={() => selectLocation(result)}>{result.name}</li>
-			{/each}
-		</ul>
-	{/if}
-
-	<div id="map" class="absolute"></div>
+	<div id="map" bind:this={mapElement} class="absolute inset-0 z-10 h-full w-full"></div>
 </main>
 
 <style>
@@ -168,31 +142,6 @@
 		width: 100%;
 		display: flex;
 		flex-direction: column;
-	}
-
-	#searchInput {
-		padding: 10px;
-		background-color: #f0f0f0;
-		display: flex;
-	}
-
-	#searchInput input {
-		flex-grow: 1;
-		padding: 5px;
-		margin-right: 5px;
-	}
-
-	#searchInput button {
-		padding: 5px 10px;
-		background-color: #4caf50;
-		color: white;
-		border: none;
-		cursor: pointer;
-	}
-
-	#searchInput button:disabled {
-		background-color: #cccccc;
-		cursor: not-allowed;
 	}
 
 	#map {
