@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Notifications from '$lib/icons/notifications.svelte';
-	import farmerImage from '$lib/assets/picture.png';
 	import Temp from '$lib/icons/temp.svelte';
 	import Water from '$lib/icons/water.svelte';
 	import Wind from '$lib/icons/wind.svelte';
@@ -10,6 +9,9 @@
 	import Add from '$lib/icons/add.svelte';
 	import ElipseBlue from '$lib/icons/elipse-blue.svelte';
 	import ElipseCyan from '$lib/icons/elipse-cyan.svelte';
+
+	import farmerImage from '$lib/assets/picture.png';
+	import farmImage1 from '$lib/assets/farms_1.png';
 
 	const weather = {
 		current: 72, // farenheit
@@ -38,6 +40,14 @@
 	// $effect(() => {
 	// 	farms_added = farms.length === 0;
 	// });
+
+	let tasks = [
+		{ task: 'Irrigate Land A', checked: false },
+		{ task: 'Irrigate Land B', checked: false },
+		{ task: 'Irrigate Land C', checked: false },
+		{ task: 'Time to harvest South farm', checked: false },
+		{ task: 'Time to harvest North farm', checked: false }
+	];
 </script>
 
 <div class="w-full h-12 flex items-center justify-end">
@@ -144,21 +154,36 @@
 	</div>
 </div>
 
-<div class="flex justify-between px-10 gap-4">
+<div class="flex justify-between px-10 gap-4 pb-14">
 	<div class="flex flex-col justify-center items-center w-full">
 		<div class="flex w-full justify-between h-11 items-center">
 			<span class="font-semibold">Farms Overview</span>
-			{#if farms_added}<button
-					class="btn btn-accent flex !bg-[#44b79a] text-white w-28 h-4 font-bold text-xs"
-					><Add />Add Farm</button
+			{#if farms_added}
+				<button
+					class="btn px-2 btn-accent flex flex-row !bg-[#44b79a] text-white w-28 h-4 font-bold"
 				>
+					<Add />Add Farm
+				</button>
 			{/if}
 		</div>
 		{#if farms_added}
-			<div class="grid grid-cols-3 gap-5 mt-6">
+			<div class="grid grid-cols-2 md:grid-cols-3 justify-between w-full gap-y-8 mt-6">
 				{#each Array(6).fill(0) as item}
-					<div class="p-5 w-[309px] h-[321px] rounded-2xl bg-white">
-						<div><img src="" /></div>
+					<div class="p-5 h-[321px] rounded-2xl m-auto bg-white">
+						<div class="relative h-44 overflow-hidden rounded-xl z-0">
+							<img src={farmImage1} class="object-cover absolute z-10" alt="" />
+							<div
+								class="absolute p-3 bottom-0 z-20 w-full text-white text-sm"
+								style="background-color:#00000033"
+							>
+								Rain expected in 2 days
+							</div>
+						</div>
+						<div class="mt-4 flex flex-col gap-2">
+							<div class="font-semibold">South East Farm</div>
+							<div>Crop Health: "Healthy"</div>
+							<div>Soil Moisture: 55% Irrigation Needed</div>
+						</div>
 					</div>
 				{/each}
 			</div>
@@ -182,7 +207,7 @@
 			</div>
 		{/if}
 	</div>
-	<div>
+	<div class="flex gap-6 flex-col">
 		<div class="bg-white w-96 p-6 rounded-3xl">
 			<div class="flex justify-between">
 				<div class="font-bold">Yield Summary</div>
@@ -212,6 +237,21 @@
 						</div>
 					</div>
 				</div>
+			</div>
+		</div>
+		<div class="bg-white w-96 p-6 rounded-3xl">
+			<div class="font-bold">Urgent Tasks</div>
+			<div class="flex flex-col gap-5 mt-6">
+				{#each tasks as task}
+					<div class="flex gap-5 items-center">
+						<input
+							type="checkbox"
+							bind:checked={task.checked}
+							class="checkbox checkbox-primary justify-self-end w-5"
+						/>
+						<div>{task.task}</div>
+					</div>
+				{/each}
 			</div>
 		</div>
 	</div>
