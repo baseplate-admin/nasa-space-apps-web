@@ -1,7 +1,12 @@
+<script>
+	import Farmer from '$lib/icons/farmer.svelte';
+</script>
+
 <div
 	data-main=""
 	class="bg-white rounded-3xl h-full w-full flex justify-center items-center flex-col gap-8"
 >
+	<Farmer />
 	<div class="font-bold text-3xl">Yay! We have created our account successfully!</div>
 	<div class="font-bold text-3xl">
 		You are now a <span class="text-[#44b79a]">Field Master!</span>
