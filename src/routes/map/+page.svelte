@@ -14,6 +14,8 @@
 	let map: L.Map | null = $state(null);
 	let searchInput = $state('');
 	let searchResults = $state<SearchResult[]>([]);
+	let isSearching = $state(false);
+	let errorMessage = $state('');
 	let mapElement = $state<HTMLElement | null>(null);
 	let dropdownElement = $state<HTMLDetailsElement | null>(null);
 	let marker: L.Marker | null = $state(null);
@@ -53,11 +55,11 @@
 			]
 		});
 
-		const template: string =
+		const nasaTemplate: string =
 			'//gibs-{s}.earthdata.nasa.gov/wmts/epsg4326/best/' +
 			'{layer}/default/{time}/{tileMatrixSet}/{z}/{y}/{x}.jpg';
 
-		const layer = L.tileLayer(template, {
+		const nasaLayer = L.tileLayer(nasaTemplate, {
 			layer: 'MODIS_Terra_CorrectedReflectance_TrueColor',
 			tileMatrixSet: '250m',
 			time: '2023-11-04',
@@ -72,12 +74,32 @@
 			attribution:
 				'<a href="https://wiki.earthdata.nasa.gov/display/GIBS">' +
 				'NASA EOSDIS GIBS</a>&nbsp;&nbsp;&nbsp;' +
-				'<a href="https://github.com/baseplate-admin/nasa-space-apps-web/blob/master/src/routes/map/%2Bpage.svelte">' +
+				'<a href="https://github.com/nasa-gibs/web-examples/blob/main/examples/leaflet/geographic-epsg4326.js">' +
 				'View Source' +
 				'</a>'
 		});
+		const osmLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			tileSize: 512,
+			minZoom: 0,
+			maxZoom: 8,
+			noWrap: true,
+			continuousWorld: true,
+			bounds: [
+				[-89.9999, -179.9999],
+				[89.9999, 179.9999]
+			],
+			attribution:
+				'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+		});
 
-		map.addLayer(layer);
+		const baseLayers = {
+			'NASA GIBS': nasaLayer,
+			OpenStreetMap: osmLayer
+		};
+
+		L.control.layers(baseLayers).addTo(map);
+
+		nasaLayer.addTo(map);
 		map.addEventListener('click', handleClick);
 		return () => {
 			map?.remove();
@@ -147,9 +169,9 @@
 </script>
 
 <main class="relative h-screen z-0">
-	<div class="z-20 grid grid-cols-3 w-screen mt-8">
+	<div class="z-20 grid grid-cols-3 w-screen mt-12">
 		<div></div>
-		<details class="dropdown place-self-center" bind:this={dropdownElement}>
+		<details class="dropdown place-self-center order-2" bind:this={dropdownElement}>
 			<summary class="btn p-0"
 				><input
 					type="text"
@@ -183,23 +205,15 @@
 				onclick={() => {
 					goto('/home');
 				}}
-				class="btn place-self-end btn-accent !bg-[#44b79a] text-white w-56 h-4 font-bold text-lg"
+				class="order-3 btn place-self-end btn-accent !bg-[#44b79a] text-white w-56 h-4 font-bold text-lg"
 				>Add Farm</button
 			>
-		{:else}
-			<div></div>
 		{/if}
 	</div>
 	<div id="map" bind:this={mapElement} class="absolute inset-0 z-10 h-full w-full"></div>
 </main>
 
 <style>
-	:global(body) {
-		margin: 0;
-		padding: 0;
-		font-family: Arial, sans-serif;
-	}
-
 	main {
 		width: 100%;
 		display: flex;
@@ -210,7 +224,9 @@
 		height: 100vh;
 		flex-grow: 1;
 	}
-
+	:global(leaflet-control-layers) {
+		z-index: 99999;
+	}
 	:global(.leaflet-container) {
 		background: #000;
 	}
