@@ -159,11 +159,12 @@
 		<div class="flex w-full justify-between h-11 items-center">
 			<span class="font-semibold">Farms Overview</span>
 			{#if farms_added}
-				<button
+				<a
+					href="/map"
 					class="btn px-2 btn-accent flex flex-row !bg-[#44b79a] text-white w-28 h-4 font-bold"
 				>
 					<Add />Add Farm
-				</button>
+				</a>
 			{/if}
 		</div>
 		{#if farms_added}
@@ -200,8 +201,10 @@
 					</div>
 					<div class="font-semibold text-black">Let’s Add a Farm First</div>
 					<div class="text-[#344054]">Add Farm to track your farm data and get a quick vision</div>
-					<button class="btn btn-accent flex !bg-[#44b79a] text-white w-28 h-4 font-bold text-xs"
-						><Add />Add Farm</button
+					<a
+						href="/map"
+						class="btn btn-accent flex !bg-[#44b79a] text-white w-28 h-4 font-bold text-xs"
+						><Add />Add Farm</a
 					>
 				</div>
 			</div>

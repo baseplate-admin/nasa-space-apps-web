@@ -3,7 +3,6 @@
 </script>
 
 <div
-	data-main=""
 	class="bg-white h-full rounded-3xl w-full flex justify-center items-center flex-col gap-8 overflow-y-scroll"
 >
 	<Farmer />
@@ -38,9 +37,3 @@
 		>Continue</a
 	>
 </div>
-
-<style>
-	div[data-main] {
-		font-family: 'Nunito';
-	}
-</style>

@@ -2,10 +2,7 @@
 	import Farmer from '$lib/icons/farmer.svelte';
 </script>
 
-<div
-	data-main=""
-	class="bg-white rounded-3xl h-full w-full flex justify-center items-center flex-col gap-8"
->
+<div class="bg-white rounded-3xl h-full w-full flex justify-center items-center flex-col gap-8">
 	<Farmer />
 	<div class="font-bold text-3xl" style="color:#44B79A">Login to your existing account?</div>
 
@@ -19,9 +16,3 @@
 		>Continue</a
 	>
 </div>
-
-<style>
-	div[data-main] {
-		font-family: 'Nunito';
-	}
-</style>
