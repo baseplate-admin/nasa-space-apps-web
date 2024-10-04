@@ -1,6 +1,6 @@
 <div
 	data-main=""
-	class="bg-white rounded-3xl h-full w-full flex justify-center items-center flex-col gap-8"
+	class="bg-white h-full rounded-3xl w-full flex justify-center items-center flex-col gap-8 overflow-y-scroll"
 >
 	<div class="font-bold text-3xl" style="color:#44B79A">Let's create an account</div>
 	<div class="flex flex-col items-start gap-2">
