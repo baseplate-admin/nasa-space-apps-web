@@ -41,6 +41,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"chart.js": "^4.4.4",
 		"leaflet": "^1.9.4",
 		"proj4leaflet": "^1.0.2"
 	}

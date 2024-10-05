@@ -12,6 +12,11 @@
 
 	import farmerImage from '$lib/assets/picture.png';
 	import farmImage1 from '$lib/assets/farms_1.png';
+	import AdditionalWater from '$lib/icons/additional-water.svelte';
+	import File from '$lib/icons/file.svelte';
+	import Pie from '$lib/charts/Pie.svelte';
+	import { farms } from '$lib/store/farm';
+	import { get } from 'svelte/store';
 
 	const weather = {
 		current: 72, // farenheit
@@ -27,7 +32,9 @@
 	const extra_field = {
 		cost: `$350.4`,
 		new_tasks: 154,
-		water_usage: `293 litres`
+		water_usage: `293 litres`,
+		soil_moisture: `50%`,
+		alerts: 5
 	};
 
 	const last_info = {
@@ -35,11 +42,7 @@
 		prob: `2300 Kg`
 	};
 
-	const farms = new Array([]);
-	let farms_added = $state<null | boolean>(true);
-	// $effect(() => {
-	// 	farms_added = farms.length === 0;
-	// });
+	let farms_added = $state<null | boolean>();
 
 	let tasks = [
 		{ task: 'Irrigate Land A', checked: false },
@@ -63,6 +66,7 @@
 		</div>
 	</div>
 </div>
+
 <div class="h-96 w-full relative overflow-hidden flex" style="background-color:black;">
 	<img class="object-cover w-full object-end absolute z-0" src={farmerImage} alt="farmer" />
 	<div class="absolute z-10 w-full h-full" style="background-color:#FFFFFF33;"></div>
@@ -132,24 +136,26 @@
 		</div>
 	</div>
 	<div class="flex p-4 h-24 w-[340px] rounded-[20px] gap-5 bg-white">
-		<div class="rounded-full size-14 bg-[#F4F7FE] flex justify-center items-center"><Bar /></div>
+		<div class="rounded-full size-14 bg-[#F4F7FE] flex justify-center items-center">
+			<AdditionalWater />
+		</div>
 		<div class="flex flex-col">
 			<div class="text-[#A3AED0]">Water Usage</div>
 			<div class="text-black font-bold">{extra_field.water_usage}</div>
 		</div>
 	</div>
 	<div class="flex p-4 h-24 w-[340px] rounded-[20px] gap-5 bg-white">
-		<div class="rounded-full size-14 bg-[#F4F7FE] flex justify-center items-center"><Bar /></div>
+		<div class="rounded-full size-14 bg-[#F4F7FE] flex justify-center items-center"><File /></div>
 		<div class="flex flex-col">
-			<div class="text-[#A3AED0]">Cost</div>
-			<div class="text-black font-bold">{extra_field.cost}</div>
+			<div class="text-[#A3AED0]">Average Soil Moisture</div>
+			<div class="text-black font-bold">{extra_field.soil_moisture}</div>
 		</div>
 	</div>
 	<div class="flex p-4 h-24 w-[340px] rounded-[20px] gap-5 bg-white">
-		<div class="rounded-full size-14 bg-[#F4F7FE] flex justify-center items-center"><Bar /></div>
+		<div class="rounded-full size-14 bg-[#F4F7FE] flex justify-center items-center"><File /></div>
 		<div class="flex flex-col">
-			<div class="text-[#A3AED0]">Cost</div>
-			<div class="text-black font-bold">{extra_field.cost}</div>
+			<div class="text-[#A3AED0]">Alerts</div>
+			<div class="text-black font-bold">{extra_field.alerts}</div>
 		</div>
 	</div>
 </div>
@@ -158,7 +164,7 @@
 	<div class="flex flex-col justify-center items-center w-full">
 		<div class="flex w-full justify-between h-11 items-center">
 			<span class="font-semibold">Farms Overview</span>
-			{#if farms_added}
+			{#if $farms.length !== 0}
 				<a
 					href="/map"
 					class="btn px-2 btn-accent flex flex-row !bg-[#44b79a] text-white w-28 h-4 font-bold"
@@ -167,10 +173,10 @@
 				</a>
 			{/if}
 		</div>
-		{#if farms_added}
+		{#if $farms.length !== 0}
 			<div class="grid grid-cols-2 md:grid-cols-3 justify-between w-full gap-y-8 mt-6">
-				{#each Array(6).fill(0) as item}
-					<div class="p-5 h-[321px] rounded-2xl m-auto bg-white">
+				{#each $farms as item}
+					<a href="/farmer" class="p-5 h-[321px] rounded-2xl m-auto bg-white">
 						<div class="relative h-44 overflow-hidden rounded-xl z-0">
 							<img src={farmImage1} class="object-cover absolute z-10" alt="" />
 							<div
@@ -185,7 +191,7 @@
 							<div>Crop Health: "Healthy"</div>
 							<div>Soil Moisture: 55% Irrigation Needed</div>
 						</div>
-					</div>
+					</a>
 				{/each}
 			</div>
 		{:else}
@@ -217,7 +223,11 @@
 				<div class="text-[#A3AED0]">Monthly</div>
 			</div>
 			<div class="flex items-center justify-center">
-				<div class="size-36 self-center"></div>
+				<div class="size-36 self-center">
+					{#if $farms.length !== 0}
+						<Pie></Pie>
+					{/if}
+				</div>
 			</div>
 
 			<div class="shadow-sm rounded-[20px] flex flex-row justify-between pb-3">

@@ -4,6 +4,7 @@
 	import 'leaflet/dist/leaflet.css';
 	import 'proj4leaflet';
 	import { goto } from '$app/navigation';
+	import { farms } from '$lib/store/farm';
 
 	interface SearchResult {
 		name: string;
@@ -14,7 +15,6 @@
 	let map: L.Map | null = $state(null);
 	let searchInput = $state('');
 	let searchResults = $state<SearchResult[]>([]);
-	let isSearching = $state(false);
 	let errorMessage = $state('');
 	let mapElement = $state<HTMLElement | null>(null);
 	let dropdownElement = $state<HTMLDetailsElement | null>(null);
@@ -78,18 +78,9 @@
 				'View Source' +
 				'</a>'
 		});
-		const osmLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-			tileSize: 512,
-			minZoom: 0,
-			maxZoom: 8,
-			noWrap: true,
-			continuousWorld: true,
-			bounds: [
-				[-89.9999, -179.9999],
-				[89.9999, 179.9999]
-			],
-			attribution:
-				'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+		const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			maxZoom: 19,
+			attribution: '© OpenStreetMap'
 		});
 
 		const baseLayers = {
@@ -109,7 +100,6 @@
 	async function handleSearch(): Promise<void> {
 		if (!searchInput.trim()) return;
 
-		isSearching = true;
 		errorMessage = '';
 		searchResults = [];
 
@@ -132,8 +122,6 @@
 		} catch (error) {
 			console.error('Search error:', error);
 			errorMessage = 'An error occurred while searching';
-		} finally {
-			isSearching = false;
 		}
 	}
 
@@ -169,7 +157,7 @@
 </script>
 
 <main class="relative h-screen z-0">
-	<div class="z-20 grid grid-cols-3 w-screen mt-12">
+	<div class="z-20 grid grid-cols-3 w-screen mt-14">
 		<div></div>
 		<details class="dropdown place-self-center order-2" bind:this={dropdownElement}>
 			<summary class="btn p-0"
@@ -187,22 +175,27 @@
 				/></summary
 			>
 			<ul class="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-				{#each searchResults as item}
-					<li>
-						<button
-							onclick={() => {
-								selectLocation(item);
-							}}
-						>
-							{item.name}
-						</button>
-					</li>
-				{/each}
+				{#if errorMessage === ''}
+					{#each searchResults as item}
+						<li>
+							<button
+								onclick={() => {
+									selectLocation(item);
+								}}
+							>
+								{item.name}
+							</button>
+						</li>
+					{/each}
+				{:else}
+					There was error fetching data : {errorMessage}
+				{/if}
 			</ul>
 		</details>
 		{#if got_location}
 			<button
 				onclick={() => {
+					$farms.push({});
 					goto('/home');
 				}}
 				class="order-3 btn place-self-end btn-accent !bg-[#44b79a] text-white w-56 h-4 font-bold text-lg"
