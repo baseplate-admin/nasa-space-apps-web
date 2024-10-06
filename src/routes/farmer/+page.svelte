@@ -479,3 +479,8 @@
 		</div>
 	</div>
 </div>
+<div
+	class="fixed bottom-[62px] right-[32px] w-[90px] h-[90px] rounded-full flex btn btn-accent text-white"
+>
+	Ask AI
+</div>

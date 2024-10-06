@@ -161,7 +161,7 @@
 </div>
 
 <div class="flex justify-between px-10 gap-4 pb-14">
-	<div class="flex flex-col justify-center items-center w-full">
+	<div class="flex flex-col w-full">
 		<div class="flex w-full justify-between h-11 items-center">
 			<span class="font-semibold">Farms Overview</span>
 			{#if $farms.length !== 0}
@@ -195,7 +195,7 @@
 				{/each}
 			</div>
 		{:else}
-			<div>
+			<div class="self-center justify-self-center">
 				<div class="flex justify-center items-center flex-col gap-3">
 					<div class="flex items-center justify-center bg-[#EAEEF9] rounded-full size-32">
 						<div
@@ -267,6 +267,12 @@
 				{/each}
 			</div>
 		</div>
+	</div>
+
+	<div
+		class="fixed bottom-[62px] right-[32px] w-[90px] h-[90px] rounded-full flex btn btn-accent text-white"
+	>
+		Ask AI
 	</div>
 </div>
 
